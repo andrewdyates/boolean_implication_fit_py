@@ -5,6 +5,7 @@
 .DS*
 *.pdf
 *.tab
+*.pkl
 
 
 # C extensions
