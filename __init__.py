@@ -4,6 +4,18 @@ import numpy as np
 
 mse_f = lambda s, ss, n: ss - s**2/n
 
+def compute_all(M, b=None, **kwds):
+  """Compute all-pairs bool, return CLS matrix."""
+  steps = []
+  for row in M:
+    steps.append(stepfit(row)[0])
+  if b is None:
+    stds = np.std(M,1)
+    b = np.percentile(stds, 3)*2
+  CLS = all_pairs_bool(M, steps, b, **kwds)
+  return CLS
+  
+
 def stepfit(v):
   """Efficient algorithm for finding LSE step-up partition."""
   x = np.sort(v)
@@ -24,8 +36,11 @@ def stepfit(v):
   return thresh, k
 
 
-def M2thresh(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
-  """Convert matrix to low, interval, high enumeration."""
+def all_pairs_bool(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
+  """Compute all-pairs boolean enumeration.
+
+  0:NA, 1:YX, 2:PC, 3:XY, 4:UNL, 5:MX, 6:NC, 7:OR
+  """
   # if d_th is None.... compute from formula in paper
   # convert entries of M into low, interval, high
   m, n = np.size(M,0), np.size(M,1)
@@ -45,28 +60,17 @@ def M2thresh(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   YH = np.array(QLH + QHH)
   ALL = QLL + QLH + QHL + QHH
 
-  def get_sparse(Q,X,Y, hack=False):
+  def get_sparse(Q,X,Y):
     Exp = (X*Y)/ALL
     Z = ((Exp-Q) / np.sqrt(Exp)) > z_th # similar to chi-squared
     Err = 0.5 * (Q/X + Q/Y) < err_th
     D = Q <= d_th
-    if hack:
-      print ((Exp-Q) / np.sqrt(Exp))[4,6]
-      print "count", Q[4,6]
-      print "Exp", Exp[4,6], X[4,6], Y[4,6], ALL[4,6], X[4,6]*Y[4,6]/ALL[4,6]
-      print "Z", ((Exp-Q) / np.sqrt(Exp))[4,6]
-      print "Err", 0.5 * (Q/X + Q/Y)[4,6]
     return (Z & Err) | D
 
   SLL = get_sparse(QLL,XL,YL)
-  SLH = get_sparse(QLH,XL,YH,hack=True)
+  SLH = get_sparse(QLH,XL,YH)
   SHL = get_sparse(QHL,XH,YL)
   SHH = get_sparse(QHH,XH,YH)
-  print 
-  print "---"
-  print "LL", SLL[4,6], "LH", SLH[4,6], "HL", SHL[4,6], "HH", SHH[4,6]
-  print "LL", QLL[4,6], "LH", QLH[4,6], "HL", QHL[4,6], "HH", QHH[4,6], "ALL", ALL[4,6]
-  print "---"
 
   # assign class enumerations
   CLS = np.ones((m,m), dtype=np.int)*4 # by default, assign all UNL
@@ -77,6 +81,4 @@ def M2thresh(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   CLS[SLL & ~SLH & ~SHL & SHH] = 6
   CLS[SLL & ~SLH & ~SHL & ~SHH] = 7
   CLS[ALL < (1-r_th)*n] = 0
-  print "!", n, r_th, (1-r_th)*n
-  
   return CLS
