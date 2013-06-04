@@ -24,21 +24,20 @@ def stepfit(v):
   return thresh, k
 
 
-def M2thresh(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=1/3):
+def M2thresh(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   """Convert matrix to low, interval, high enumeration."""
   # if d_th is None.... compute from formula in paper
   # convert entries of M into low, interval, high
-  n = np.size(M,0)
+  n = np.size(M,1)
   S = np.matrix(Steps).T
-  H = np.matrix(M > (S+b))
-  L = np.matrix(M < (S-b))
-  U = ~(H|L)
+  H = np.matrix(M > (S+b), dtype=np.int)
+  L = np.matrix(M < (S-b), dtype=np.int)
   # counts per quadrant
   QLL = np.dot(L,L.T)
   QLH = np.dot(L,H.T)
   QHL = np.dot(H,L.T)
   QHH = np.dot(H,H.T)
-  QU = np.dot(U,U.T)
+
   # get sparsity for each quad
   XL = QLL + QLH
   YL = QLL + QHL
@@ -59,13 +58,13 @@ def M2thresh(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=1/3):
   SHH = get_sparse(QHL,XH,YH)
 
   # assign class enumerations
-  CLS = np.ones((n,n))*4 # by default, assign all UNL
+  CLS = np.ones((n,n), dtype=np.int)*4 # by default, assign all UNL
   CLS[~SLL & ~SLH & SHL & ~SHH] = 1
   CLS[~SLL & SLH & SHL & ~SHH] = 2
   CLS[~SLL & SLH & ~SHL & ~SHH] = 3
   CLS[~SLL & ~SLH & ~SHL & SHH] = 5
   CLS[SLL & ~SLH & ~SHL & SHH] = 6
   CLS[SLL & ~SLH & ~SHL & ~SHH] = 7
-  CLS[QU > r_th*n] = 0
+  CLS[ALL < (1-r_th)*n] = 0
   
   return CLS
