@@ -82,3 +82,35 @@ def all_pairs_bool(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   CLS[SLL & ~SLH & ~SHL & ~SHH] = 7
   CLS[ALL < (1-r_th)*n] = 0
   return CLS
+
+def all_pairs_weak(M, err=1, th=0.2):
+  """Compute all-pairs weak enumeration.
+  0:NC, 1:AND, 2:RN4C, 3: CN4R, 4:XOR, 5:MIX
+  """
+  t = np.transpose
+  m,n = M.shape
+  B = np.array(M>=th,dtype=np.int)
+  BN = np.array(M<th,dtype=np.int)
+  AND_B = np.dot(B,t(B))
+  N = np.dot(BN,t(BN))*-1 + n      # number of entries where at least one bit is on
+  RN4C_B = N - np.dot(BN,t(B))
+  CN4R_B = N - np.dot(B,t(BN))
+  XOR_B = RN4C_B + CN4R_B - 2*AND_B
+  RN4C_O = RN4C_B - AND_B
+  CN4R_O = CN4R_B - AND_B
+  print "AND errors"
+  print N-AND_B
+  print "RN4C_B errors"
+  print N-RN4C_B
+  print "CN4R_B errors"
+  print N-CN4R_B
+  print "XOR errors"
+  print N-XOR_B
+
+  W = np.ones((m,m), dtype=np.int)*5
+  W[N-AND_B <= err] = 1
+  W[N-XOR_B <= err] = 4
+  W[(N-RN4C_B <= err) & (RN4C_O >= err+1)] = 2
+  W[(N-CN4R_B <= err) & (CN4R_O >= err+1)] = 3
+  return W
+  

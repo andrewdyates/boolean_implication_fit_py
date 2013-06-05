@@ -21,11 +21,11 @@ def main(fname=None, pkl=True, **kwds):
   D = mio.load(fname)
   print "Computing all pairs boolean class..."
   CLS = compute_all(D['M'], **kwds)
-  print "Saving %s..." % (fname+'.tab')
-  mio.save(CLS, fname+'.tab', fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
+  print "Saving %s..." % (fname+'.bool.tab')
+  mio.save(CLS, fname+'.bool.tab', fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
   if pkl:
-    print "Saving %s..." % (fname+'.pkl')
-    pickle.dump(CLS, open(fname+".pkl","w"))
+    print "Saving %s..." % (fname+'.bool.pkl')
+    pickle.dump(CLS, open(fname+".bool.pkl","w"))
 
 if __name__ == "__main__":
   args = dict([s.split('=') for s in sys.argv[1:]])
