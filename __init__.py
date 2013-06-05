@@ -12,6 +12,9 @@ def compute_all(M, b=None, **kwds):
   if b is None:
     stds = np.std(M,1)
     b = np.percentile(stds, 3)*2
+    print "Computed signal 2*std to be %f" % b
+  else:
+    print "Using provided signal 2*std, %f" % b
   CLS = all_pairs_bool(M, steps, b, **kwds)
   return CLS
   
