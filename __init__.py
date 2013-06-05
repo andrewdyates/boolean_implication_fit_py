@@ -83,7 +83,7 @@ def all_pairs_bool(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   CLS[ALL < (1-r_th)*n] = 0
   return CLS
 
-def all_pairs_weak(M, err=1, th=0.2):
+def all_pairs_weak(M, err=1, th=0.2, debug=False):
   """Compute all-pairs weak enumeration.
   0:NC, 1:AND, 2:RN4C, 3: CN4R, 4:XOR, 5:MIX
   """
@@ -98,14 +98,15 @@ def all_pairs_weak(M, err=1, th=0.2):
   XOR_B = RN4C_B + CN4R_B - 2*AND_B
   RN4C_O = RN4C_B - AND_B
   CN4R_O = CN4R_B - AND_B
-  print "AND errors"
-  print N-AND_B
-  print "RN4C_B errors"
-  print N-RN4C_B
-  print "CN4R_B errors"
-  print N-CN4R_B
-  print "XOR errors"
-  print N-XOR_B
+  if debug:
+    print "AND errors"
+    print N-AND_B
+    print "RN4C_B errors"
+    print N-RN4C_B
+    print "CN4R_B errors"
+    print N-CN4R_B
+    print "XOR errors"
+    print N-XOR_B
 
   W = np.ones((m,m), dtype=np.int)*5
   W[N-AND_B <= err] = 1
