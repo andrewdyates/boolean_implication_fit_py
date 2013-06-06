@@ -71,10 +71,13 @@ def all_pairs_bool(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   # set zero values in X, Y margins to -1 to avoid division by zero.
   # any such entry will be assigned "4" class unless assigned "0" class.
   BAD_MARGIN = (XL==0)|(YL==0)|(XH==0)|(YH==0)
+  TOO_FEW = ALL < (1-r_th)*n
   XL[BAD_MARGIN] = 1
   YL[BAD_MARGIN] = 1
   XH[BAD_MARGIN] = 1
   YH[BAD_MARGIN] = 1
+  YH[BAD_MARGIN] = 1
+  ALL[TOO_FEW] = 1 # includes 0 case
 
   def get_sparse(Q,X,Y):
     Exp = (X*Y)/ALL
@@ -97,7 +100,7 @@ def all_pairs_bool(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   CLS[SLL & ~SLH & ~SHL & SHH] = 6
   CLS[SLL & ~SLH & ~SHL & ~SHH] = 7
   CLS[BAD_MARGIN] = 4
-  CLS[ALL < (1-r_th)*n] = 0
+  CLS[TOO_FEW] = 0
   return CLS
 
 def all_pairs_weak(M, err=1, th=0.2, debug=False):
