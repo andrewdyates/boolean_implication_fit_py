@@ -27,7 +27,7 @@ def main(fname=None, pkl=True, **kwds):
   print "Loading data..."
   D = mio.load(fname)
   print "Computing all pairs boolean class..."
-  CLS, steps, b = compute_all(D['M'], **kwds)
+  CLS, steps, b = compute_all_bool(D['M'], **kwds)
   fname_out = '%s.b%.4f.bool.tab' % (fname, b)
   print "Saving %s..." % (fname_out)
   mio.save(CLS, fname_out, fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])

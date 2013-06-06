@@ -4,8 +4,8 @@ import numpy as np
 
 mse_f = lambda s, ss, n: ss - s**2/n
 
-def compute_all(M, b=None, **kwds):
-  """Compute all-pairs bool, return CLS matrix."""
+def compute_all_bool(M, b=None, **kwds):
+  """Compute all-pairs bool, return all relevant results."""
   print "Computing high/low thresholds using adaptive regression..."
   steps = []
   for row in M:
@@ -19,7 +19,11 @@ def compute_all(M, b=None, **kwds):
   print "Computing boolean implications..."
   CLS = all_pairs_bool(M, steps, b, **kwds)
   return CLS, steps, b
-  
+
+def compute_all_weak(M, err=1, th=0.2, debug=False):
+  """Compute all-pairs weak, return all relevant results."""
+  WEAK = all_pairs_weak(M, err, th, debug)
+  return WEAK, err, th
 
 def stepfit(v):
   """Efficient algorithm for finding LSE step-up partition."""

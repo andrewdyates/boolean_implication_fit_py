@@ -18,12 +18,16 @@ def main(fname=None, pkl=True, **kwds):
 
   D = mio.load(fname)
   print "Computing all pairs weak boolean class..."
-  WEAK = all_pairs_weak(D['M'], **kwds)
-  print "Saving %s..." % (fname+'.weak.tab')
-  mio.save(WEAK, fname+'.weak.tab', fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
+  WEAK, err, th = compute_all_weak(D['M'], **kwds)
+  print "Used parameters err=%d, cutoff th=%f" % (err, th)
+
+  fname_out = "%s.err%d.th%.4f.weak.tab" % (fname, err, th)
+  print "Saving %s..." % (fname_out)
+  mio.save(WEAK, fname_out, fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
   if pkl:
-    print "Saving %s..." % (fname+'.weak.pkl')
-    pickle.dump(WEAK, open(fname+".weak.pkl","w"))
+    fname_pkl_out = fname_out.rpartition('.')[0]+'.pkl'
+    print "Saving %s..." % (fname_pkl_out)
+    pickle.dump(WEAK, open(fname_pkl_out,"w"))
   return WEAK
 
 if __name__ == "__main__":
