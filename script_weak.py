@@ -18,6 +18,8 @@ def main(fname=None, pkl=True, **kwds):
 
   D = mio.load(fname)
   print "Computing all pairs weak boolean class..."
+  print "Computing all pairs weak class for a (%d x %d) data matrix (%d x %d result matrix)..." % \
+      (D['M'].shape[0], D['M'].shape[1], D['M'].shape[0], D['M'].shape[0])
   WEAK, err, th = compute_all_weak(D['M'], **kwds)
   print "Used parameters err=%d, cutoff th=%f" % (err, th)
 

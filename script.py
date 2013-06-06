@@ -26,9 +26,14 @@ def main(fname=None, pkl=True, **kwds):
   if 'r_th' in kwds: kwds['r_th'] = float(kwds['r_th'])
   print "Loading data..."
   D = mio.load(fname)
-  print "Computing all pairs boolean class..."
+  print "Computing all pairs boolean class for a (%d x %d) data matrix (%d x %d result matrix)..." % \
+      (D['M'].shape[0], D['M'].shape[1], D['M'].shape[0], D['M'].shape[0])
   CLS, steps, b = compute_all_bool(D['M'], **kwds)
-  fname_out = '%s.b%.4f.bool.tab' % (fname, b)
+  if 'z_th' in kwds:
+    z = float(kwds['z_th'])
+  else:
+    z = 3.0
+  fname_out = '%s.b%.4f.z%.2f.bool.tab' % (fname, b, z)
   print "Saving %s..." % (fname_out)
   mio.save(CLS, fname_out, fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
   steps_fname = fname+".steps.txt"
