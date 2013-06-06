@@ -68,6 +68,13 @@ def all_pairs_bool(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   XH = np.array(QHL + QHH)
   YH = np.array(QLH + QHH)
   ALL = QLL + QLH + QHL + QHH
+  # set zero values in X, Y margins to -1 to avoid division by zero.
+  # any such entry will be assigned "4" class unless assigned "0" class.
+  BAD_MARGIN = (XL==0)|(YL==0)|(XH==0)|(YH==0)
+  XL[BAD_MARGIN] = 1
+  YL[BAD_MARGIN] = 1
+  XH[BAD_MARGIN] = 1
+  YH[BAD_MARGIN] = 1
 
   def get_sparse(Q,X,Y):
     Exp = (X*Y)/ALL
@@ -89,6 +96,7 @@ def all_pairs_bool(M, Steps, b, z_th=3, err_th=0.1, d_th=1, r_th=2/3):
   CLS[~SLL & ~SLH & ~SHL & SHH] = 5
   CLS[SLL & ~SLH & ~SHL & SHH] = 6
   CLS[SLL & ~SLH & ~SHL & ~SHH] = 7
+  CLS[BAD_MARGIN] = 4
   CLS[ALL < (1-r_th)*n] = 0
   return CLS
 

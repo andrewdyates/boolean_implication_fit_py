@@ -13,10 +13,12 @@ def main():
   for row in M:
     Steps.append(stepfit(row)[0])
   b = 0.3
-  CLS = all_pairs_bool(M, Steps, b, z_th=2.7)
+  #CLS = all_pairs_bool(M, Steps, b, z_th=2.7)
+  CLS = all_pairs_bool(M, Steps, b)
   print CLS
   print D.keys()
   mio.save(CLS, "nice.test.tab", fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
+  print "OK: saved result to nice.test.tab"
   
   
 
