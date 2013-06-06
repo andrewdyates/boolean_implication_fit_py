@@ -1,14 +1,20 @@
 #!/usr/bin/python
 """Compute all pairs boolean class.
 
-USE:
+SAMPLE USES:
+python script.py fname=nice.may3.Eg.expr.gold.celegans.csv
+
 python script.py fname=nice.may3.Eg.expr.gold.celegans.csv b=0.3
+
+FNAME=$HOME/celegans/jun5.GSE2180.SCAN.select.tab
+Z=0.27
+B=0.08797455
+time python $HOME/code/boolean_implication_fit_py/script.py fname=$FNAME b=$B z_th=$Z
 """
 import sys
 import matrix_io as mio
 from __init__ import *
 import cPickle as pickle
-
 
 def main(fname=None, pkl=True, **kwds):
   assert fname
@@ -18,14 +24,20 @@ def main(fname=None, pkl=True, **kwds):
   if 'err_th' in kwds: kwds['err_th'] = float(kwds['err_th'])
   if 'd_th' in kwds: kwds['d_th'] = float(kwds['d_th'])
   if 'r_th' in kwds: kwds['r_th'] = float(kwds['r_th'])
+  print "Loading data..."
   D = mio.load(fname)
   print "Computing all pairs boolean class..."
-  CLS = compute_all(D['M'], **kwds)
-  print "Saving %s..." % (fname+'.bool.tab')
-  mio.save(CLS, fname+'.bool.tab', fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
+  CLS, steps, b = compute_all(D['M'], **kwds)
+  fname_out = '%s.b%.4f.bool.tab' % (fname, b)
+  print "Saving %s..." % (fname_out)
+  mio.save(CLS, fname_out, fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
+  steps_fname = fname+".steps.txt"
+  print "Saving high/low thresholds to %s in original row order..." % steps_fname
+  open(steps_fname,"w").write("\n".join(("%f"%x for x in steps)))
   if pkl:
-    print "Saving %s..." % (fname+'.bool.pkl')
-    pickle.dump(CLS, open(fname+".bool.pkl","w"))
+    fname_pkl_out = fname_out.rpartition('.')[0]+'.pkl'
+    print "Saving %s..." % (fname_pkl_out)
+    pickle.dump(CLS, open(fname_pkl_out,"w"))
 
 if __name__ == "__main__":
   args = dict([s.split('=') for s in sys.argv[1:]])

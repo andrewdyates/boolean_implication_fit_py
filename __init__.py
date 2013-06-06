@@ -6,6 +6,7 @@ mse_f = lambda s, ss, n: ss - s**2/n
 
 def compute_all(M, b=None, **kwds):
   """Compute all-pairs bool, return CLS matrix."""
+  print "Computing high/low thresholds using adaptive regression..."
   steps = []
   for row in M:
     steps.append(stepfit(row)[0])
@@ -15,8 +16,9 @@ def compute_all(M, b=None, **kwds):
     print "Computed signal 2*std to be %f" % b
   else:
     print "Using provided signal 2*std, %f" % b
+  print "Computing boolean implications..."
   CLS = all_pairs_bool(M, steps, b, **kwds)
-  return CLS
+  return CLS, steps, b
   
 
 def stepfit(v):
