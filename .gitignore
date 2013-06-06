@@ -5,6 +5,10 @@
 .DS*
 *.pdf
 *.pkl
+*.csv.bool.pkl
+*.csv.weak.tab
+*.csv.weak.pkl
+*.csv.bool.tab
 
 
 # C extensions
