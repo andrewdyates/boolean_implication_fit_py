@@ -29,7 +29,7 @@ def main(fname=None, pkl=True, **kwds):
   if pkl:
     fname_pkl_out = fname_out.rpartition('.')[0]+'.pkl'
     print "Saving %s..." % (fname_pkl_out)
-    pickle.dump(WEAK, open(fname_pkl_out,"w"))
+    pickle.dump(WEAK, open(fname_pkl_out,"w"), protocol=-1)
   return WEAK
 
 if __name__ == "__main__":

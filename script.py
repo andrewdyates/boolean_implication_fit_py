@@ -42,7 +42,7 @@ def main(fname=None, pkl=True, **kwds):
   if pkl:
     fname_pkl_out = fname_out.rpartition('.')[0]+'.pkl'
     print "Saving %s..." % (fname_pkl_out)
-    pickle.dump(CLS, open(fname_pkl_out,"w"))
+    pickle.dump(CLS, open(fname_pkl_out,"w"), protocol=-1)
 
 if __name__ == "__main__":
   args = dict([s.split('=') for s in sys.argv[1:]])
