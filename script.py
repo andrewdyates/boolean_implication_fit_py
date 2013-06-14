@@ -7,9 +7,7 @@ python script.py fname=nice.may3.Eg.expr.gold.celegans.csv
 python script.py fname=nice.may3.Eg.expr.gold.celegans.csv b=0.3
 
 FNAME=$HOME/celegans/jun5.GSE2180.SCAN.select.tab
-Z=0.27
-B=0.08797455
-time python $HOME/code/boolean_implication_fit_py/script.py fname=$FNAME b=$B z_th=$Z
+time python $HOME/code/boolean_implication_fit_py/script.py fname=$FNAME b=0.08797455 z_th=2.5
 """
 import sys
 import matrix_io as mio
