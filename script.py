@@ -9,6 +9,7 @@ python script.py fname=nice.may3.Eg.expr.gold.celegans.csv b=0.3
 FNAME=$HOME/celegans/jun5.GSE2180.SCAN.select.tab
 time python $HOME/code/boolean_implication_fit_py/script.py fname=$FNAME b=0.08797455 z_th=2.5
 """
+from __future__ import division
 import sys
 import matrix_io as mio
 from __init__ import *
@@ -27,11 +28,10 @@ def main(fname=None, pkl=True, **kwds):
   print "Computing all pairs boolean class for a (%d x %d) data matrix (%d x %d result matrix)..." % \
       (D['M'].shape[0], D['M'].shape[1], D['M'].shape[0], D['M'].shape[0])
   CLS, steps, b = compute_all_bool(D['M'], **kwds)
-  if 'z_th' in kwds:
-    z = float(kwds['z_th'])
-  else:
-    z = 3.0
-  fname_out = '%s.b%.4f.z%.2f.bool.tab' % (fname, b, z)
+  z = kwds.get('z_th', 3.0)
+  r = kwds.get('r_th', 2/3)
+  err = kwds.get('err_th', 0.1)
+  fname_out = '%s.b%.4f.z%.2f.r%.2f.err%.2f.bool.tab' % (fname, b, z, r, err)
   print "Saving %s..." % (fname_out)
   mio.save(CLS, fname_out, fmt="%d", row_ids=D['row_ids'], col_ids=D['row_ids'])
   steps_fname = fname+".steps.txt"
