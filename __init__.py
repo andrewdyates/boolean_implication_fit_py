@@ -17,6 +17,8 @@ def compute_all_bool(M, b=None, **kwds):
   else:
     print "Using provided signal 2*std, %f" % b
   print "Computing boolean implications..."
+  r = kwds.get('r_th', 2/3)
+  print "Minimum number of points outside of error bounds to classify: %.2f" % (r*M.shape[1])
   CLS = all_pairs_bool(M, steps, b, **kwds)
   return CLS, steps, b
 

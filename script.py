@@ -30,6 +30,8 @@ def main(fname=None, pkl=True, **kwds):
   CLS, steps, b = compute_all_bool(D['M'], **kwds)
   z = kwds.get('z_th', 3.0)
   r = kwds.get('r_th', 2/3)
+  if r < 0.5:
+    print "WARNING: r<0.5, (r=%f)... are you sure?" % r
   err = kwds.get('err_th', 0.1)
   fname_out = '%s.b%.4f.z%.2f.r%.2f.err%.2f.bool.tab' % (fname, b, z, r, err)
   print "Saving %s..." % (fname_out)
